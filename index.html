@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jean Pablo Rocha de Souza — Montador de Móveis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #050508;
+    --accent: #c8a96e;
+    --accent-light: #e2c992;
+    --text-primary: #f0eee8;
+    --text-secondary: #9a9490;
+    --text-muted: #5a5752;
+    --glass-bg: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.08);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); overflow-x: hidden; line-height: 1.6; }
+  #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.5; }
+  .cursor-glow { position: fixed; width: 400px; height: 400px; background: radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 70%); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); z-index: 1; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; transition: all 0.4s ease; }
+  nav.scrolled { background: rgba(5,5,8,0.88); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 12px 48px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+  .nav-logo a { text-decoration: none; color: inherit; }
+  .nav-logo img { height: 32px; width: auto; vertical-align: middle; }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.78rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--accent); }
+  .btn-pdf { padding: 9px 22px; background: transparent; color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid rgba(200,169,110,0.4); border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: all 0.3s; white-space: nowrap; flex-shrink: 0; font-family: 'Inter', sans-serif; }
+  .btn-pdf:hover { background: rgba(200,169,110,0.1); border-color: var(--accent); transform: translateY(-1px); }
+  .btn-pdf svg { width: 14px; height: 14px; flex-shrink: 0; }
+  #hero { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; z-index: 2; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(200,169,110,0.07) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 20% 80%, rgba(100,80,180,0.05) 0%, transparent 50%), linear-gradient(160deg, #050508 0%, #08080f 50%, #050508 100%); }
+  .hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 100px 48px 60px; display: grid; grid-template-columns: 1fr 400px; align-items: center; gap: 70px; width: 100%; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 0.72rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+  .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--accent); }
+  .hero-name { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 4.5vw, 4rem); font-weight: 900; line-height: 1.08; letter-spacing: -1px; color: var(--text-primary); margin-bottom: 18px; min-height: 100px; }
+  .hero-name .cursor { display: inline-block; width: 3px; background: var(--accent); animation: blink 1s step-end infinite; margin-left: 2px; vertical-align: middle; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .hero-role { font-size: 1rem; font-weight: 500; color: var(--accent); letter-spacing: 1px; margin-bottom: 16px; }
+  .hero-tagline { font-size: 1rem; color: var(--text-secondary); line-height: 1.75; max-width: 480px; margin-bottom: 40px; font-weight: 300; }
+  .hero-tagline em { font-style: normal; color: var(--text-primary); font-weight: 500; }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary { padding: 13px 30px; background: var(--accent); color: #0a0800; font-weight: 700; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.3s; box-shadow: 0 0 28px rgba(200,169,110,0.3); }
+  .btn-primary:hover { background: var(--accent-light); transform: translateY(-2px); }
+  .btn-secondary { padding: 13px 30px; background: transparent; color: var(--text-primary); font-weight: 600; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--glass-border); border-radius: 50px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+  .hero-photo-wrap { position: relative; display: flex; justify-content: center; }
+  .hero-photo-frame { position: relative; width: 300px; height: 380px; border-radius: 180px 180px 140px 140px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 0 70px rgba(200,169,110,0.12), 0 28px 70px rgba(0,0,0,0.6); }
+  .hero-photo-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 0.1s linear; }
+  .hero-photo-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(5,5,8,0.6) 100%); }
+  .hero-photo-badge { position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 50px; padding: 9px 22px; white-space: nowrap; font-size: 0.74rem; font-weight: 600; color: var(--accent); letter-spacing: 1px; }
+  .photo-placeholder { width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a24 0%, #12121a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  .photo-placeholder svg { opacity: 0.3; }
+  .photo-placeholder span { font-size: 0.72rem; color: var(--text-muted); text-align: center; padding: 0 20px; }
+  section { position: relative; z-index: 2; }
+  .section-inner { max-width: 1200px; margin: 0 auto; padding: 100px 48px; }
+  .section-label { display: inline-flex; align-items: center; gap: 10px; font-size: 0.68rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+  .section-label::before { content: ''; width: 22px; height: 1px; background: var(--accent); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 900; line-height: 1.15; letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 20px; }
+  .section-divider { width: 56px; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); margin-bottom: 44px; border-radius: 2px; }
+  #sobre .section-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+  .sobre-text { font-size: 1rem; color: var(--text-secondary); line-height: 1.85; font-weight: 300; }
+  .sobre-text strong { color: var(--text-primary); font-weight: 600; }
+  .sobre-img-frame { width: 100%; height: 420px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 28px 70px rgba(0,0,0,0.5); }
+  .sobre-img-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #stats { background: linear-gradient(180deg, transparent 0%, rgba(200,169,110,0.03) 50%, transparent 100%); }
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; margin-top: 52px; }
+  .stat-card { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 32px 22px; text-align: center; transition: all 0.4s; cursor: default; }
+  .stat-card:hover { border-color: rgba(200,169,110,0.3); background: rgba(200,169,110,0.06); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 28px rgba(200,169,110,0.1); }
+  .stat-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 10px; display: block; }
+  .stat-suffix { font-size: 1.6rem; }
+  .stat-label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; line-height: 1.4; }
+  #experiencia .section-inner { display: grid; grid-template-columns: 1fr 2fr; gap: 70px; align-items: start; }
+  .exp-left { position: sticky; top: 110px; }
+  .exp-description { font-size: 0.96rem; color: var(--text-secondary); line-height: 1.75; font-weight: 300; margin-top: 18px; }
+  .timeline { position: relative; padding-left: 38px; }
+  .timeline-line { position: absolute; left: 0; top: 12px; width: 2px; height: 0; background: linear-gradient(to bottom, var(--accent), rgba(200,169,110,0.1)); transition: height 0.8s ease; border-radius: 2px; }
+  .timeline-line.animated { height: calc(100% - 24px); }
+  .timeline-item { position: relative; margin-bottom: 48px; opacity: 0; transform: translateX(28px); transition: all 0.6s ease; }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-dot { position: absolute; left: -45px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px rgba(200,169,110,0.6); border: 2px solid var(--bg-primary); }
+  .timeline-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 28px 32px; transition: all 0.4s; }
+  .timeline-card:hover { border-color: rgba(200,169,110,0.25); background: rgba(200,169,110,0.05); transform: translateX(4px); }
+  .timeline-period { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .timeline-role { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
+  .timeline-company { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .timeline-company::before { content: ''; width: 18px; height: 1px; background: var(--text-muted); }
+  .timeline-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; font-weight: 300; }
+  #qualidades { background: linear-gradient(180deg, transparent 0%, rgba(200,169,110,0.02) 50%, transparent 100%); }
+  .qualidades-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin-top: 56px; }
+  .qual-card { position: relative; border-radius: var(--radius-lg); overflow: hidden; height: 440px; cursor: default; border: 1px solid var(--glass-border); transition: transform 0.4s, box-shadow 0.4s; }
+  .qual-card:hover { transform: translateY(-8px); box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 40px rgba(200,169,110,0.1); }
+  .qual-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.6s; }
+  .qual-card:hover .qual-bg { transform: scale(1.06); }
+  .qual-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(5,5,8,0.92) 0%, rgba(5,5,8,0.3) 60%, transparent 100%); }
+  .qual-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 32px; transform: translateY(10px); transition: transform 0.4s; }
+  .qual-card:hover .qual-content { transform: translateY(0); }
+  .qual-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 9px; }
+  .qual-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; opacity: 0; transform: translateY(8px); transition: all 0.4s 0.1s; font-weight: 300; }
+  .qual-card:hover .qual-desc { opacity: 1; transform: translateY(0); }
+  .objetivos-card { background: var(--glass-bg); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 56px 60px; margin-top: 44px; position: relative; overflow: hidden; }
+  .objetivos-card::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 180px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+  .objetivos-text { font-size: 1.06rem; color: var(--text-secondary); line-height: 1.85; font-weight: 300; }
+  .objetivos-text strong { color: var(--text-primary); font-weight: 600; }
+  .quote-inner { max-width: 960px; margin: 0 auto; padding: 100px 48px; text-align: center; }
+  .quote-mark { font-family: 'Playfair Display', serif; font-size: 7rem; color: var(--accent); opacity: 0.15; line-height: 0.4; margin-bottom: 28px; display: block; }
+  .quote-text { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem, 2.8vw, 2.1rem); font-weight: 700; color: var(--text-primary); line-height: 1.42; }
+  .quote-text em { font-style: italic; color: var(--accent); }
+  #contato { background: linear-gradient(180deg, transparent 0%, rgba(200,169,110,0.03) 50%, transparent 100%); }
+  .contato-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; margin-top: 52px; }
+  .contato-card { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 28px 32px; display: flex; align-items: center; gap: 18px; text-decoration: none; transition: all 0.4s; color: inherit; }
+  .contato-card:hover { border-color: rgba(200,169,110,0.3); background: rgba(200,169,110,0.06); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .contato-icon { width: 48px; height: 48px; border-radius: 12px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; }
+  .contato-icon img { width: 26px; height: 26px; object-fit: contain; }
+  .contato-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
+  .contato-value { font-size: 0.95rem; color: var(--text-primary); font-weight: 500; }
+  footer { position: relative; z-index: 2; text-align: center; padding: 44px 24px; border-top: 1px solid var(--glass-border); }
+  footer p { font-size: 0.78rem; color: var(--text-muted); }
+  footer span { color: var(--accent); }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  @media (max-width: 1024px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    #experiencia .section-inner { grid-template-columns: 1fr; }
+    .exp-left { position: static; }
+    .qualidades-grid { grid-template-columns: 1fr 1fr; }
+    nav { padding: 16px 24px; }
+    nav.scrolled { padding: 12px 24px; }
+    .nav-links { gap: 20px; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    nav.scrolled { padding: 11px 20px; }
+    .nav-links { display: none; }
+    .btn-pdf { padding: 8px 16px; font-size: 0.7rem; }
+    .hero-inner { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 36px; text-align: center; }
+    .hero-photo-wrap { order: -1; }
+    .hero-photo-frame { width: 200px; height: 260px; margin: 0 auto; }
+    .hero-eyebrow { justify-content: center; }
+    .hero-tagline { margin-left: auto; margin-right: auto; }
+    .hero-btns { justify-content: center; }
+    #sobre .section-inner { grid-template-columns: 1fr; gap: 36px; }
+    .sobre-img-frame { height: 280px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-card { padding: 24px 14px; }
+    .stat-number { font-size: 2.4rem; }
+    #experiencia .section-inner { grid-template-columns: 1fr; gap: 40px; }
+    .timeline { padding-left: 28px; }
+    .timeline-dot { left: -35px; }
+    .timeline-card { padding: 22px 20px; }
+    .qualidades-grid { grid-template-columns: 1fr; gap: 16px; }
+    .qual-card { height: 340px; }
+    .qual-desc { opacity: 1; transform: none; }
+    .objetivos-card { padding: 36px 24px; }
+    .contato-grid { grid-template-columns: 1fr; gap: 14px; }
+    .contato-card { padding: 22px 20px; }
+    .section-inner { padding: 72px 20px; }
+    .quote-inner { padding: 72px 20px; }
+    .quote-mark { font-size: 5rem; }
+  }
+  @media (max-width: 420px) {
+    .hero-name { min-height: 80px; font-size: 2.1rem; }
+    .hero-photo-frame { width: 170px; height: 220px; }
+    .stats-grid { gap: 10px; }
+    .stat-number { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+<div class="cursor-glow" id="cursor-glow"></div>
+
+<nav id="navbar">
+  <div class="nav-logo">
+    <a href="#hero">
+      <img src="./assets/vericardo-gears-5875_512.gif" alt="Logo"
+           onerror="this.style.display='none'; this.parentElement.textContent='JP.'">
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#experiencia">Experiência</a></li>
+    <li><a href="#qualidades">Qualidades</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+  <button class="btn-pdf" id="btn-pdf" onclick="gerarPDF()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Baixar PDF
+  </button>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Meu Currículo</div>
+      <h1 class="hero-name" id="typed-name"><span class="cursor"></span></h1>
+      <p class="hero-role">Montador / Colador de Móveis</p>
+      <p class="hero-tagline"><em>Comprometimento, responsabilidade</em> e vontade de evoluir todos os dias.</p>
+      <div class="hero-btns">
+        <a href="#experiencia" class="btn-primary">Ver Experiência</a>
+        <a href="#contato" class="btn-secondary">Contato</a>
+      </div>
+    </div>
+    <div class="hero-photo-wrap">
+      <div class="hero-photo-frame" id="parallax-photo">
+        <div class="photo-placeholder" style="background-image: url('./assets/prof1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+      </div>
+      <div class="hero-photo-badge">🟢 Disponível para contato</div>
+    </div>
+  </div>
+</section>
+
+<section id="sobre">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Sobre Mim</div>
+      <h2 class="section-title">Profissional dedicado,<br>em constante evolução</h2>
+      <div class="section-divider"></div>
+      <p class="sobre-text">
+        Sou um profissional com experiência na área da <strong>montagem inicial/final e cola de móveis</strong>, atuando com dedicação, organização e atenção aos detalhes. Ao longo da minha trajetória desenvolvi habilidades como <strong>trabalho em equipe</strong>, comprometimento, responsabilidade e resolução de problemas.
+        <br><br>
+        Paralelamente à minha experiência profissional, mantenho meus estudos voltados para <strong>tecnologia, desenvolvimento Full Stack e Inteligência Artificial</strong>.
+      </p>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="sobre-img-frame">
+        <img src="./assets/about-imag.png" alt="Montagem de Móveis" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label" style="justify-content:center">Números</div>
+      <h2 class="section-title" style="text-align:center">Em números,<br>minha trajetória</h2>
+      <div class="section-divider" style="margin:0 auto 0"></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card reveal reveal-delay-1">
+        <span class="stat-number"><span class="counter" data-target="3">0</span><span class="stat-suffix">+</span></span>
+        <div class="stat-label">Anos de experiência<br>profissional</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <span class="stat-number"><span class="counter" data-target="100">0</span><span class="stat-suffix">%</span></span>
+        <div class="stat-label">Comprometimento<br>com horário e entrega</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <span class="stat-number">Full</span>
+        <div class="stat-label">Stack em<br>formação</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-4">
+        <span class="stat-number">IA</span>
+        <div class="stat-label">Aprendizado<br>contínuo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experiencia">
+  <div class="section-inner">
+    <div class="exp-left reveal">
+      <div class="section-label">Trajetória</div>
+      <h2 class="section-title">Experiência<br>Profissional</h2>
+      <div class="section-divider"></div>
+      <p class="exp-description">Histórico de atuação com responsabilidade, crescimento e dedicação à qualidade no setor moveleiro.</p>
+    </div>
+    <div>
+      <div class="timeline">
+        <div class="timeline-line" id="timeline-line"></div>
+        <div class="timeline-item" id="exp1">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-period">Novembro 2023 — Junho 2026</div>
+            <div class="timeline-role">Montador / Colador</div>
+            <div class="timeline-company">Móveis B P LTDA</div>
+            <p class="timeline-desc">Nessa segunda jornada já comecei como colador (cadeiras), atuando até o final do contrato. Nesse período também auxiliei na montagem, substituindo colaboradores quando necessário. Garantindo qualidade em cada etapa do processo.</p>
+          </div>
+        </div>
+        <div class="timeline-item" id="exp2">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-period">Abril 2022 — Abril 2023</div>
+            <div class="timeline-role">Auxiliar de Montagem / Colador</div>
+            <div class="timeline-company">Móveis B P LTDA</div>
+            <p class="timeline-desc">Primeira experiência com carteira assinada. Os 4 primeiros meses atuei na montagem de cama box, sendo transferido em seguida para o setor de cola (colchões), onde permaneci até o encerramento do contrato.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="qualidades">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label" style="justify-content:center">Diferenciais</div>
+      <h2 class="section-title" style="text-align:center">O que me<br>define</h2>
+      <div class="section-divider" style="margin:0 auto 0"></div>
+    </div>
+    <div class="qualidades-grid">
+      <div class="qual-card reveal reveal-delay-1">
+        <div class="qual-bg" style="background-image:url('./assets/qualidade1.png'); background-color:#1a0e04;"></div>
+        <div class="qual-overlay"></div>
+        <div class="qual-content">
+          <div class="qual-title">Comprometimento</div>
+          <p class="qual-desc">Dedicação total às responsabilidades e objetivos profissionais.</p>
+        </div>
+      </div>
+      <div class="qual-card reveal reveal-delay-2">
+        <div class="qual-bg" style="background-image:url('./assets/qualidade2.png'); background-color:#041208;"></div>
+        <div class="qual-overlay"></div>
+        <div class="qual-content">
+          <div class="qual-title">Aprendizado Contínuo</div>
+          <p class="qual-desc">Busca constante por evolução e novos conhecimentos.</p>
+        </div>
+      </div>
+      <div class="qual-card reveal reveal-delay-3">
+        <div class="qual-bg" style="background-image:url('./assets/qualidade3.png'); background-color:#04040f;"></div>
+        <div class="qual-overlay"></div>
+        <div class="qual-content">
+          <div class="qual-title">Trabalho em Equipe</div>
+          <p class="qual-desc">Facilidade para colaborar, comunicar e construir resultados.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="objetivos">
+  <div class="section-inner" style="max-width:860px; margin:0 auto">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label" style="justify-content:center">Visão de Futuro</div>
+      <h2 class="section-title" style="text-align:center">Objetivos<br>Profissionais</h2>
+      <div class="section-divider" style="margin:0 auto 0"></div>
+    </div>
+    <div class="objetivos-card reveal reveal-delay-1">
+      <p class="objetivos-text">
+        Meu objetivo é continuar crescendo profissionalmente, contribuindo com <strong>dedicação, responsabilidade</strong> e vontade constante de aprender. Atualmente também invisto em estudos relacionados à <strong>tecnologia, desenvolvimento web e Inteligência Artificial</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="quote">
+  <div class="quote-inner">
+    <span class="quote-mark reveal">"</span>
+    <blockquote class="quote-text reveal reveal-delay-1">
+      Grandes profissionais não nascem prontos. São construídos através da <em>disciplina, constância</em> e vontade de evoluir.
+    </blockquote>
+  </div>
+</section>
+
+<section id="contato">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Contato</div>
+      <h2 class="section-title">Vamos conversar?</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="contato-grid">
+      <a href="https://wa.me/+5532998549219" class="contato-card reveal reveal-delay-0.2" target="_blank" rel="noopener">
+        <div class="contato-icon"><img src="./assets/whatsapp.png" alt="WhatsApp"></div>
+        <div>
+          <div class="contato-label">WhatsApp</div>
+          <div class="contato-value">(32) 99854-9219</div>
+        </div>
+      </a>
+      <a href="mailto:jean1533pablo@gmail.com" class="contato-card reveal reveal-delay-0.2">
+        <div class="contato-icon"><img src="./assets/email.png" alt="E-mail"></div>
+        <div>
+          <div class="contato-label">E-mail</div>
+          <div class="contato-value">jean1533pablo@gmail.com</div>
+        </div>
+      </a>
+      <a href="https://www.google.com/maps/place/R.+Jos%C3%A9+Khoury,+Visc.+do+Rio+Branco+-+MG,+36520-000/@-21.0117858,-42.8499718,17z/data=!3m1!4b1!4m6!3m5!1s0xa33de6cdcb8bef:0x1d816a58aa17c52!8m2!3d-21.0117858!4d-42.8473969!16s%2Fg%2F1ymwnsbs1?entry=ttu&g_ep=EgoyMDI2MDYyMy4wIKXMDSoASAFQAw%3D%3D" class="contato-card reveal reveal-delay-0.2" target="_blank" rel="noopener">
+        <div class="contato-icon"><img src="./assets/location.png" alt="Local"></div>
+        <div>
+          <div class="contato-label">Localização</div>
+          <div class="contato-value">Rua José Khoury, Chácara - Visconde do Rio Branco</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span>Jean Pablo Rocha de Souza</span> — Todos os direitos reservados.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ── PDF ─────────────────────────────────────────────────── */
+function gerarPDF() {
+  const btn = document.getElementById('btn-pdf');
+  btn.textContent = 'Gerando...';
+  btn.disabled = true;
+
+  
+  const imgEl = new Image();
+  imgEl.crossOrigin = 'anonymous';
+  imgEl.onload = function() {
+    const tmpC = document.createElement('canvas');
+    tmpC.width = imgEl.naturalWidth;
+    tmpC.height = imgEl.naturalHeight;
+    tmpC.getContext('2d').drawImage(imgEl, 0, 0);
+    const fotoB64 = tmpC.toDataURL('image/jpeg', 0.92);
+    construirECapturar(fotoB64);
+  };
+  imgEl.onerror = function() {
+    construirECapturar(null);
+  };
+  imgEl.src = './assets/prof1.jpg';
+
+  function construirECapturar(fotoB64) {
+    const fotoTag = fotoB64
+      ? '<img src="' + fotoB64 + '" style="width:88px;height:110px;object-fit:cover;object-position:center top;border-radius:8px;border:2px solid #c8a96e;display:block;margin-left:auto;">'
+      : '';
+
+    const htmlCurriculo = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;line-height:1.55;background:#fff;width:794px;}</style>
+</head><body>
+<div style="background:#0f0f18;padding:36px 44px 30px;color:#fff;">
+  <table style="width:100%;border-collapse:collapse;"><tr>
+    <td style="vertical-align:top;padding:0;">
+      <div style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:4px;">Jean Pablo Rocha de Souza</div>
+      <div style="font-size:11px;color:#c8a96e;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:16px;">Montador / Colador de Móveis</div>
+      <table style="border-collapse:collapse;"><tr>
+        <td style="padding:0 18px 4px 0;font-size:11.5px;color:#b0aca4;"><span style="color:#c8a96e;margin-right:5px;">●</span>(32) 99854-9219</td>
+        <td style="padding:0 18px 4px 0;font-size:11.5px;color:#b0aca4;"><span style="color:#c8a96e;margin-right:5px;">●</span>jean1533pablo@gmail.com</td>
+      </tr><tr>
+        <td colspan="2" style="padding:0;font-size:11.5px;color:#b0aca4;"><span style="color:#c8a96e;margin-right:5px;">●</span>Visconde do Rio Branco — MG</td>
+      </tr></table>
+    </td>
+    <td style="vertical-align:top;text-align:right;padding:0;width:110px;">${fotoTag}</td>
+  </tr></table>
+</div>
+<table style="width:100%;border-collapse:collapse;vertical-align:top;"><tr>
+  <td style="vertical-align:top;padding:28px 28px 36px 44px;width:520px;">
+    <div style="font-size:9.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#c8a96e;margin-bottom:4px;padding-bottom:8px;border-bottom:1px solid #e8e4dc;">EXPERIÊNCIA PROFISSIONAL</div>
+    <div style="margin-top:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #f0ede8;">
+      <table style="width:100%;border-collapse:collapse;"><tr>
+        <td style="padding:0;vertical-align:top;"><div style="font-size:13.5px;font-weight:700;color:#111;">Montador / Colador</div></td>
+        <td style="padding:0;text-align:right;vertical-align:top;white-space:nowrap;"><div style="font-size:10.5px;color:#888;font-weight:500;">Nov 2023 — Jun 2026</div></td>
+      </tr></table>
+      <div style="font-size:11px;color:#c8a96e;font-weight:700;margin:3px 0 6px;">Móveis B P LTDA</div>
+      <div style="font-size:12px;color:#4a4a4a;line-height:1.6;">Atuação como colador no setor de cadeiras, com suporte à montagem em substituições. Garantia de qualidade em cada etapa do processo, cumprimento de prazos e organização do posto de trabalho.</div>
+    </div>
+    <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #f0ede8;">
+      <table style="width:100%;border-collapse:collapse;"><tr>
+        <td style="padding:0;vertical-align:top;"><div style="font-size:13.5px;font-weight:700;color:#111;">Auxiliar de Montagem / Colador</div></td>
+        <td style="padding:0;text-align:right;vertical-align:top;white-space:nowrap;"><div style="font-size:10.5px;color:#888;font-weight:500;">Abr 2022 — Abr 2023</div></td>
+      </tr></table>
+      <div style="font-size:11px;color:#c8a96e;font-weight:700;margin:3px 0 6px;">Móveis B P LTDA</div>
+      <div style="font-size:12px;color:#4a4a4a;line-height:1.6;">Primeira experiência com carteira assinada. Comecei na montagem de cama box (4 meses), depois transferido para o setor de cola de colchões, onde atuei até o encerramento do contrato.</div>
+    </div>
+    <div style="font-size:9.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#c8a96e;margin-top:20px;margin-bottom:4px;padding-bottom:8px;border-bottom:1px solid #e8e4dc;">OBJETIVO PROFISSIONAL</div>
+    <p style="font-size:12px;color:#444;line-height:1.65;margin-top:14px;">Continuar crescendo profissionalmente em ambiente que valorize <strong style="color:#111;">dedicação e comprometimento</strong>. Busco oportunidade na qual possa contribuir com minha experiência prática e vontade constante de aprender e evoluir.</p>
+    <div style="font-size:9.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#c8a96e;margin-top:20px;margin-bottom:4px;padding-bottom:8px;border-bottom:1px solid #e8e4dc;">FORMAÇÃO / ESTUDOS</div>
+    <div style="margin-top:14px;">
+      <table style="width:100%;border-collapse:collapse;"><tr>
+        <td style="padding:0;"><div style="font-size:13px;font-weight:700;color:#111;">Desenvolvimento Full Stack</div></td>
+        <td style="padding:0;text-align:right;white-space:nowrap;"><div style="font-size:10.5px;color:#888;">Em andamento</div></td>
+      </tr></table>
+      <div style="font-size:11px;color:#c8a96e;font-weight:700;margin:3px 0 5px;">Estudos autônomos — tecnologia e IA</div>
+      <div style="font-size:12px;color:#4a4a4a;line-height:1.6;">Aprendizado contínuo em desenvolvimento web, lógica de programação e Inteligência Artificial.</div>
+    </div>
+  </td>
+  <td style="vertical-align:top;padding:28px 44px 36px 0;width:230px;">
+    <div style="background:#faf9f7;border-radius:8px;padding:20px 18px;">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#c8a96e;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #e8e4dc;">DADOS PESSOAIS</div>
+      <div style="margin-bottom:10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">Nome completo</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;">Jean Pablo Rocha de Souza</div></div>
+      <div style="margin-bottom:10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">Data de nascimento</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;">15/08/2003</div></div>
+      <div style="margin-bottom:10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">Idade</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;">22 anos</div></div>
+      <div style="margin-bottom:10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">CPF</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;">151.366.896-09</div></div>
+      <div style="margin-bottom:10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">Estado civil</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;">Solteiro</div></div>
+      <div style="margin-bottom:10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">Nome da mãe</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;">Janete Rocha</div></div>
+      <div style="margin-bottom:10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">Nome do pai</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;">Erivelton Lucio de Souza</div></div>
+      <div style="margin-bottom:16px;"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin-bottom:2px;">Endereço</div><div style="font-size:12px;color:#1a1a1a;font-weight:500;line-height:1.5;">Rua José Khoury, Chácara<br>Visconde do Rio Branco — MG</div></div>
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#c8a96e;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #e8e4dc;">HABILIDADES</div>
+      <div style="margin-bottom:9px;"><table style="width:100%;border-collapse:collapse;"><tr><td style="font-size:11.5px;color:#333;padding:0;">Montagem</td><td style="width:90px;padding:0;"><div style="width:90px;height:4px;background:#e8e4dc;border-radius:2px;overflow:hidden;"><div style="width:100%;height:90%;background:#c8a96e;border-radius:2px;"></div></div></td></tr></table></div>
+      <div style="margin-bottom:9px;"><table style="width:100%;border-collapse:collapse;"><tr><td style="font-size:11.5px;color:#333;padding:0;">Cola</td><td style="width:90px;padding:0;"><div style="width:90px;height:4px;background:#e8e4dc;border-radius:2px;overflow:hidden;"><div style="width:100%;height:100%;background:#c8a96e;border-radius:2px;"></div></div></td></tr></table></div>
+      <div style="margin-bottom:9px;"><table style="width:100%;border-collapse:collapse;"><tr><td style="font-size:11.5px;color:#333;padding:0;">Acabamento / Estofamento</td><td style="width:90px;padding:0;"><div style="width:90px;height:4px;background:#e8e4dc;border-radius:2px;overflow:hidden;"><div style="width:60%;height:100%;background:#c8a96e;border-radius:2px;"></div></div></td></tr></table></div>
+      <div style="margin-bottom:9px;"><table style="width:100%;border-collapse:collapse;"><tr><td style="font-size:11.5px;color:#333;padding:0;">Organização</td><td style="width:90px;padding:0;"><div style="width:90px;height:4px;background:#e8e4dc;border-radius:2px;overflow:hidden;"><div style="width:100%;height:100%;background:#c8a96e;border-radius:2px;"></div></div></td></tr></table></div>
+      <div style="margin-bottom:0;"><table style="width:100%;border-collapse:collapse;"><tr><td style="font-size:11.5px;color:#333;padding:0;">Pontualidade</td><td style="width:90px;padding:0;"><div style="width:90px;height:4px;background:#e8e4dc;border-radius:2px;overflow:hidden;"><div style="width:100%;height:100%;background:#c8a96e;border-radius:2px;"></div></div></td></tr></table></div>
+    </div>
+  </td>
+</tr></table>
+<div style="background:#0f0f18;padding:13px 44px;display:table;width:100%;box-sizing:border-box;">
+  <div style="display:table-cell;font-size:10px;color:#5a5752;">© 2026 <span style="color:#c8a96e;">Jean Pablo Rocha de Souza</span> — Currículo gerado digitalmente</div>
+  <div style="display:table-cell;text-align:right;font-size:10px;color:#5a5752;">Visconde do Rio Branco — MG · (32) 99854-9219</div>
+</div>
+</body></html>`;
+
+   
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:0;left:0;width:794px;height:1122px;border:none;z-index:99999;opacity:1;pointer-events:none;';
+    document.body.appendChild(iframe);
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(htmlCurriculo);
+    iframe.contentDocument.close();
+
+
+    setTimeout(function() {
+      const alvo = iframe.contentDocument.body;
+      html2canvas(alvo, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: 794,
+        windowWidth: 794
+      }).then(function(canvas) {
+        document.body.removeChild(iframe);
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        const pdfW = pdf.internal.pageSize.getWidth();
+        const pdfH = pdf.internal.pageSize.getHeight();
+        const imgH = (canvas.height * pdfW) / canvas.width;
+        if (imgH <= pdfH) {
+          pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, imgH);
+        } else {
+          let page = 0;
+          let remaining = imgH;
+          while (remaining > 0) {
+            if (page > 0) pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, -(page * pdfH), pdfW, imgH);
+            remaining -= pdfH;
+            page++;
+          }
+        }
+        pdf.save('curriculo-jean-pablo.pdf');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar PDF';
+        btn.disabled = false;
+      }).catch(function(e) {
+        document.body.removeChild(iframe);
+        btn.textContent = 'Baixar PDF';
+        btn.disabled = false;
+      });
+    }, 800);
+  }
+}
+
+
+const glow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => { glow.style.left=e.clientX+'px'; glow.style.top=e.clientY+'px'; });
+
+
+const canvas=document.getElementById('particles-canvas'), ctx=canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+resize(); window.addEventListener('resize',resize);
+class Particle{
+  constructor(){this.reset();}
+  reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.4+.3;this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;this.a=Math.random()*.4+.1;}
+  update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
+  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,169,110,${this.a})`;ctx.fill();}
+}
+for(let i=0;i<80;i++)particles.push(new Particle());
+(function loop(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(loop);})();
+
+
+const navbar=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{navbar.classList.toggle('scrolled',scrollY>60);});
+
+
+const nameEl=document.getElementById('typed-name'), fullName='Jean Pablo\nRocha de Souza';
+let i=0;
+function typeNext(){
+  if(i<fullName.length){
+    const ch=fullName[i], cur=nameEl.querySelector('.cursor');
+    if(cur)nameEl.removeChild(cur);
+    if(ch==='\n')nameEl.appendChild(document.createElement('br'));
+    else nameEl.append(ch);
+    const nc=document.createElement('span');nc.className='cursor';nameEl.appendChild(nc);
+    i++;setTimeout(typeNext,i<11?80:60);
+  }
+}
+setTimeout(typeNext,800);
+
+
+const pPhoto=document.getElementById('parallax-photo');
+window.addEventListener('scroll',()=>{const img=pPhoto?.querySelector('img');if(img)img.style.transform=`translateY(${scrollY*.25}px)`;},{passive:true});
+
+
+const revEls=document.querySelectorAll('.reveal');
+const revObs=new IntersectionObserver(ens=>{ens.forEach(e=>e.isIntersecting?e.target.classList.add('visible'):e.target.classList.remove('visible'));},{threshold:.12});
+revEls.forEach(el=>revObs.observe(el));
+
+
+const cEls=document.querySelectorAll('.counter');let cDone=false;
+function runCounters(){cEls.forEach(el=>{const t=parseInt(el.dataset.target),step=t/(1800/16);let cur=0;const tm=setInterval(()=>{cur+=step;if(cur>=t){cur=t;clearInterval(tm);}el.textContent=Math.floor(cur);},16);});}
+const sObs=new IntersectionObserver(en=>{if(en[0].isIntersecting&&!cDone){cDone=true;runCounters();}},{threshold:.3});
+const ss=document.getElementById('stats');if(ss)sObs.observe(ss);
+
+
+const tItems=document.querySelectorAll('.timeline-item'),tlLine=document.getElementById('timeline-line');
+const tiObs=new IntersectionObserver(en=>{en.forEach(e=>e.isIntersecting?e.target.classList.add('visible'):e.target.classList.remove('visible'));},{threshold:.2});
+tItems.forEach(t=>tiObs.observe(t));
+const llObs=new IntersectionObserver(en=>{tlLine.classList.toggle('animated',en[0].isIntersecting);},{threshold:.1});
+if(tlLine)llObs.observe(tlLine.parentElement);
+
+
+document.querySelectorAll('.stat-card,.contato-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform=`perspective(600px) rotateY(${x*10}deg) rotateX(${-y*10}deg) translateY(-4px)`;});
+  card.addEventListener('mouseleave',()=>{card.style.transform='';});
+});
+
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});});
+});
+</script>
+</body>
+</html>
